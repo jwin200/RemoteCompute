@@ -1,0 +1,49 @@
+version: "3"
+services:
+  nginx:
+    build: ./config/nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - "8084:80"
+      - "443:443"
+    command: nginx -g "daemon off;"
+    volumes:
+      - static:/static/
+      - media:/media/
+    links:
+      - web:web
+    depends_on:
+      - web
+
+  web:
+    build: .
+    container_name: web
+    restart: always
+    expose:
+      - "8010"
+    links:
+      - db:db
+    volumes:
+      - static:/static/
+      - media:/media/
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file:
+      - config/web/django.env
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+
+  db:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - config/postgres/database.env
+
+volumes:
+  static:
+  media:
