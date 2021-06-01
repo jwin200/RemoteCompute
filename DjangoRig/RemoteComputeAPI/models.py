@@ -12,7 +12,7 @@ class ExecutableModel(models.Model):
     ]
     name = models.CharField(max_length=120,
                             default=None)
-    file = models.FileField(upload_to='uploads/%Y/%m/%d/',
+    file = models.FileField(upload_to=f'uploads/{None}/',  # Put the name of the dir here
                             default=None,
                             null=True)
     file_type = models.CharField(max_length=120,

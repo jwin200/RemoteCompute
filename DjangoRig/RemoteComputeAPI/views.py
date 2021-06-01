@@ -1,10 +1,11 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 from rest_framework import viewsets, status, parsers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import ExecutableSerializer
 from .models import ExecutableModel
-from .utils.docker_utils import run_alpine
+from .utils.dockerfile_utils import make_dockerfile
 
 
 class ExecutableViewSet(viewsets.ModelViewSet):
@@ -16,8 +17,8 @@ class ExecutableViewSet(viewsets.ModelViewSet):
 
 def container_view(request):
     if request.method == 'GET':
-        run_alpine()
-        return Response()
+        response = make_dockerfile('alpine:latest', 'manage.py')
+        return HttpResponse(response)
 
 
 # # V2
